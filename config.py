@@ -1,0 +1,21 @@
+﻿import urllib.parse
+
+# 数据库配置
+DB_HOST = "127.0.0.1\\MSSQLSERVER01"   # 主机+实例名
+DB_NAME = "kembla_admin"
+DB_USER = "sa"
+DB_PASSWORD = "sdo10+20+30"
+
+# Flask/JWT 密钥
+SECRET_KEY = "kemblapj-secretkey-flask"        # Flask 内部用的
+JWT_SECRET_KEY = "kemblapj-secretkey-jwt"    # 专门给 JWT 用的
+
+DB_PASSWORD = urllib.parse.quote(DB_PASSWORD)
+
+# 使用 pyodbc 驱动
+SQLALCHEMY_DATABASE_URI = (
+	f"mssql+pyodbc://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+	"?driver=ODBC+Driver+17+for+SQL+Server"
+)
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
