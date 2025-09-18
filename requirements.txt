@@ -9,3 +9,4 @@ python-dotenv==1.0.1
 waitress==3.0.0
 pyodbc==5.1.0
 greenlet>=3.0
+fpdf2>=2.7.8    # pdf生成器

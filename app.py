@@ -6,6 +6,7 @@ from flask_jwt_extended.exceptions import NoAuthorizationError
 from app.extensions import db, jwt
 from app.api.user_api import bp as user_bp
 from app.api.paper_api import bp as paper_bp
+from app.api.asresult_api import bp as asresult_bp
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -19,6 +20,7 @@ jwt.init_app(app)
 # 蓝图注册
 app.register_blueprint(user_bp, url_prefix="/user")
 app.register_blueprint(paper_bp, url_prefix="/paper")
+app.register_blueprint(asresult_bp, url_prefix="/asresult")
 
 # 白名单，不需要校验 token 的路径
 WHITE_LIST = [

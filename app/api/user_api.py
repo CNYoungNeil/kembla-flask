@@ -8,6 +8,7 @@ from app.services.user_service import authenticate, get_user_list
 
 bp = Blueprint("user", __name__)
 
+# 用户登录
 @bp.route("/login", methods=["POST"])
 def login():
 	data = request.get_json()
@@ -44,6 +45,7 @@ def list_page():
 	return Result.success(data)
 
 
+# 新增用户create
 @bp.route("/save", methods=["POST"])
 def save_user():
 	try:

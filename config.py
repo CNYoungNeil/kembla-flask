@@ -12,6 +12,10 @@ JWT_SECRET_KEY = "kemblapj-secretkey-jwt"    # 专门给 JWT 用的
 
 DB_PASSWORD = urllib.parse.quote(DB_PASSWORD)
 
+# PDF 导出配置
+PDF_FONT_NAME = "Arial"   # 英文字体直接用系统自带的 Arial
+PDF_FONT_SIZE = 10
+
 # 使用 pyodbc 驱动
 SQLALCHEMY_DATABASE_URI = (
 	f"mssql+pyodbc://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
