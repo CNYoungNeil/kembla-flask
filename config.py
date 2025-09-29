@@ -1,10 +1,10 @@
 ﻿import urllib.parse
 
 # 数据库配置
-DB_HOST = "127.0.0.1\\MSSQLSERVER01"   # 主机+实例名
+DB_HOST = "BI-SQL04\\SYSPRO"   # 主机+实例名
 DB_NAME = "kembla_admin"
-DB_USER = "sa"
-DB_PASSWORD = "sdo10+20+30"
+DB_USER = "kembla"
+DB_PASSWORD = "kembla"
 
 # Flask/JWT 密钥
 SECRET_KEY = "kemblapj-secretkey-flask"        # Flask 内部用的

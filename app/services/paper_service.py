@@ -85,3 +85,43 @@ class PaperService:
 		# 其他状态
 		return "Paper doesn't display properly!"
 
+	@staticmethod
+	def add_full_paper(data: dict):
+		try:
+			# 1. 新建试卷
+			paper = Paper(
+				title=data["title"],
+				description=data.get("description"),
+				role_type=data.get("roleType")
+			)
+			db.session.add(paper)
+			db.session.flush()  # 获取 paper_id
+
+			# 2. 新建题目和选项
+			for q in data.get("questions", []):
+				question = Question(
+					paper_id=paper.paper_id,
+					content=q["content"],
+					type=q["type"],
+					order_index=q["orderIndex"],
+					required=q.get("required", True)
+				)
+				db.session.add(question)
+				db.session.flush()
+
+				for opt in q.get("options", []):
+					option = QuesOption(
+						question_id=question.id,
+						label=opt["label"],
+						value=opt["value"],
+						is_correct=opt.get("isCorrect", False)
+					)
+					db.session.add(option)
+
+			db.session.commit()
+			return {"paperId": paper.paper_id}
+		except Exception as e:
+			db.session.rollback()
+			raise e
+
+		

@@ -29,3 +29,13 @@ def fill_paper():
 		return Result.fail("试卷加载失败或状态不正确")
 
 	return Result.success(paper_data)
+
+# 创建新试卷（paper，question，opt_question一起提交）
+@bp.route("/newPaper", methods=["POST"])
+def add_full_paper():
+    data = request.get_json()
+    try:
+        result = PaperService.add_full_paper(data)
+        return Result.success(result, "新增试卷成功")
+    except Exception as e:
+        return Result.fail(f"新增试卷失败: {str(e)}")
