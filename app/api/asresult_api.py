@@ -60,6 +60,9 @@ def submit_with_score():
 	data = request.get_json()
 	dto = AsanswerDTO.from_dict(data)
 
+	print("DEBUG 接收到的数据:", data)
+
+
 	try:
 		vo = AsresultService.submit_with_score(dto)
 		return Result.success(vo)

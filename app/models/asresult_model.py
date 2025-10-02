@@ -14,6 +14,7 @@ class Asresult(db.Model):
 	attempt_number = db.Column(db.Integer)
 	status = db.Column(db.Integer)   # 0=Completed, 1=In Progress, 2=Not Started, 3=Draft
 	parent_id = db.Column(db.BigInteger)
+	duration = db.Column(db.Integer)   # ✅ 考试用时，单位秒
 
 	def to_dict(self):
 		return {
@@ -27,6 +28,8 @@ class Asresult(db.Model):
 			"attemptNumber": self.attempt_number,
 			"status": self.status,
 			"parentId": self.parent_id,
+			"duration": self.duration,   # ✅ 返回给前端
+			
 		}
 
 	def __repr__(self):

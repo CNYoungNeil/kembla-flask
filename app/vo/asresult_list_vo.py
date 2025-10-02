@@ -9,6 +9,7 @@
 		self.status = asr.status
 		self.attemptNumber = asr.attempt_number
 		self.submitTime = asr.submit_time.strftime("%Y-%m-%d %H:%M:%S") if asr.submit_time else None
+		self.duration = asr.duration
 
 		# User 表
 		self.roleId = user.role_id if user else None
@@ -22,6 +23,10 @@
 		# Paper 表
 		self.title = paper.title if paper else None
 		self.description = paper.description if paper else None
+
+		
+        # ⚡ 新增：题目 VO 列表（默认空） 对应的asresult_question_vo.py这个vo类
+		self.questions = []
 
 	def to_dict(self):
 		return self.__dict__

@@ -33,6 +33,11 @@ class PaperService:
 		# 查询该卷所有题目
 		questions = Question.query.filter_by(paper_id=asresult.paper_id).all()
 
+		    # 取 Paper 信息
+		paper = Paper.query.get(asresult.paper_id)
+		if not paper:
+			return None
+
 		# ---- 新卷：status = 2 → 返回整卷 ----
 		if asresult.status == 2:
 			# 第一次进入试卷，初始化 attemptNumber = 0
@@ -47,7 +52,8 @@ class PaperService:
 				question_items.append(
 					QuestionItem(q.id, q.order_index, q.content, q.type, q.required, option_items)
 				)
-			return PaperFillVO(asresult.paper_id, "Paper", "Assessment", question_items).to_dict()
+			return PaperFillVO(asresult.paper_id, paper.title, paper.description
+			, question_items).to_dict()
 
 		# ---- 错题卷：status = 3 → 根据答案筛选错题 ----
 		elif asresult.status == 3:
@@ -76,10 +82,11 @@ class PaperService:
 
 			return PaperFillVO(
 				asresult.paper_id,
-				"Paper (Retry)",
-				"Retry Wrong Questions",
+				f"{paper.title} (Retry)",   # ✅ 在原始 title 基础上加 Retry
+				paper.description,          # ✅ 还是用数据库里的 description
 				question_items
 			).to_dict()
+
 
 
 		# 其他状态
@@ -87,6 +94,9 @@ class PaperService:
 
 	@staticmethod
 	def add_full_paper(data: dict):
+		print("DEBUG received data:", data)
+		print("DEBUG type(roleType):", type(data.get("roleType")))
+
 		try:
 			# 1. 新建试卷
 			paper = Paper(
@@ -101,11 +111,12 @@ class PaperService:
 			for q in data.get("questions", []):
 				question = Question(
 					paper_id=paper.paper_id,
-					content=q["content"],
-					type=q["type"],
-					order_index=q["orderIndex"],
+					content=q.get("content"),
+					type=q.get("type"),
+					order_index=q.get("orderIndex"),  # ✅ 没有就 None → NULL
 					required=q.get("required", True)
 				)
+
 				db.session.add(question)
 				db.session.flush()
 
@@ -114,8 +125,10 @@ class PaperService:
 						question_id=question.id,
 						label=opt["label"],
 						value=opt["value"],
+						order_index=opt.get("orderIndex"),
 						is_correct=opt.get("isCorrect", False)
 					)
+
 					db.session.add(option)
 
 			db.session.commit()

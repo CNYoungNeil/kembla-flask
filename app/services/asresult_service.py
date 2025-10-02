@@ -58,7 +58,7 @@ class AsresultService:
 			paper_id=paper_id,
 			status=2,             # 未开始
 			attempt_number=0,    #尝试次数为0
-			submit_time=datetime.now()
+			submit_time=datetime.now(),
 		)
 		db.session.add(asresult)
 		db.session.commit()
@@ -106,11 +106,12 @@ class AsresultService:
 		standard_answers = AnswerCheckUtil.build_standard_answers(asresult.paper_id)
 		result_map, score, passed = AnswerCheckUtil.compare_answers(dto.answers, standard_answers)
 
-		# 3. 更新原卷
+		# 3. 更新原卷（写入答案）
 		asresult.answers = json.dumps(dto.answers, ensure_ascii=False)
 		asresult.score = score
 		asresult.passed = 1 if passed else 0
 		asresult.submit_time = datetime.now()
+		asresult.duration = dto.duration   # ✅ 保存用时
 
 		# --- 状态流转 ---
 		if asresult.attempt_number == 0:  # 第一次提交
@@ -193,6 +194,16 @@ class AsresultService:
 			options = db.session.query(QuesOption).filter_by(question_id=q.id).all()
 			correct_ans = [opt.value for opt in options if opt.is_correct]
 
+			# ⚡ 新增：把选项列表拼进去
+			option_list = [
+				{
+					"value": opt.value,
+					"label": opt.label,
+				}
+				for opt in options
+			]
+
+
 			# 格式化用户答案
 			if isinstance(user_ans, str):
 				user_ans = user_ans.split(",") if "," in user_ans else [user_ans]
@@ -204,7 +215,7 @@ class AsresultService:
 				"questionTitle": q.content,
 				"userAnswer": user_ans,
 				"correctAnswer": correct_ans,
-				"isCorrect": is_correct
+				"options": option_list   # ⚡ 新增字段
 			})
 
 		return {
